@@ -32,6 +32,12 @@ module Proxy::Dns
         @server = Proxy::Dns::Virsh.new(opts.merge(
           :virsh_network => Proxy::SETTINGS.virsh_network
         ))
+      when "globodns"
+        require 'dns/providers/globodns'
+        @server = Proxy::Dns::GloboDNS.new(opts.merge(
+          :auth_token => Proxy::Dns::Plugin.settings.auth_token,
+          :host => Proxy::Dns::Plugin.settings.host
+        ))
       else
         log_halt 400, "Unrecognized or missing DNS provider: #{Proxy::Dns::Plugin.settings.dns_provider || "MISSING"}"
       end

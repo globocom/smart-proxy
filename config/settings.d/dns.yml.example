@@ -1,12 +1,13 @@
 ---
 # Can be true, false, or http/https to enable just one of the protocols
-:enabled: false 
+:enabled: false
 
 # Valid providers:
 #   nsupdate
 #   nsupdate_gss (for GSS-TSIG support)
 #   virsh
 #   dnscmd
+#   globodns
 #:dns_provider: nsupdate
 #:dns_key: /etc/rndc.key
 # use this setting if you are managing a dns server which is not localhost though this proxy
@@ -17,3 +18,6 @@
 # Secure Dynamic Updates, or BIND as used in FreeIPA.  Set dns_provider to nsupdate_gss.
 #:dns_tsig_keytab: /usr/share/foreman-proxy/dns.keytab
 #:dns_tsig_principal: DNS/host.example.com@EXAMPLE.COM
+# GloboDNS variables
+#:auth_token: "YourToken"
+#:host: "globodns.example.com"
