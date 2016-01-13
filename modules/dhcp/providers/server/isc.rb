@@ -54,6 +54,7 @@ module Proxy::DHCP
       statements += solaris_options_statements(options)
       statements += ztp_options_statements(options)
       statements += poap_options_statements(options)
+      statements += bmp_options_statements(options)
 
       omcmd "set statements = \"#{statements.join(" ")}\""      unless statements.empty?
       omcmd "create"
@@ -407,6 +408,24 @@ module Proxy::DHCP
         logger.debug "setting POAP options"
         statements << "option tftp-server-name = \\\"#{options[:nextServer]}\\\";"
         statements << "option bootfile-name = \\\"#{options[:filename]}\\\";"
+      end
+      statements
+    end
+
+    # DNOS BMP requires special DHCP options
+    def bmp_options_statements(options)
+      statements = []
+      # If the filename starts with "DNOS", it should be a DNOS boot image
+      if options[:filename] && options[:filename].match(/^boot\/FTOS.*/i)
+        logger.debug "setting BMP options"
+        # Dell switches require option 150 for the IP address of the TFTP server
+        # and option 209 with the preconfig script, following the same
+        # name convention used by the TFTP proxy.
+        # Option 209 should be configured as 'option configfile' in dhcpd.conf.
+        opt150 = ip2hex validate_ip(options[:nextServer])
+        configfile = 'bmp.cfg/01-' + options[:mac].gsub(/:/,"-").downcase
+        statements << "option option-150 = #{opt150};"
+        statements << "option configfile = \\\"#{configfile}\\\";"
       end
       statements
     end

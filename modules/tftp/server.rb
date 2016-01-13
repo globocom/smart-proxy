@@ -104,6 +104,18 @@ module Proxy::TFTP
     end
   end
 
+  class Bmp < Server
+    def pxeconfig_dir
+      "#{path}/bmp.cfg"
+    end
+    def pxe_default
+      pxeconfig_dir
+    end
+    def pxeconfig_file mac
+      "#{pxeconfig_dir}/01-"+mac.gsub(/:/,"-").downcase
+    end
+  end
+
   def self.fetch_boot_file dst, src
 
     filename    = boot_filename(dst, src)
